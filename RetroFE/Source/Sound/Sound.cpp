@@ -18,11 +18,14 @@
 
 #include "../Utility/Log.h"
 
+#define NO_SOUND
+
 Sound::Sound(std::string file, std::string altfile)
     : file_(file)
     , chunk_(NULL)
     , channel_(-1)
 {
+    #ifndef NO_SOUND
     if(!allocate())
     {
         file_ = altfile;
@@ -31,49 +34,64 @@ Sound::Sound(std::string file, std::string altfile)
             Logger::write(Logger::ZONE_ERROR, "Sound", "Cannot load " + file_);
         }
     }
+    #endif
 }
 
 Sound::~Sound()
 {
+    #ifndef NO_SOUND
     if(chunk_)
     {
         Mix_FreeChunk(chunk_);
         chunk_ = NULL;
     }
+    #endif
 }
 
 void Sound::play()
 {
+    #ifndef NO_SOUND
     if(chunk_)
     {
         channel_ = Mix_PlayChannel(-1, chunk_, 0);
     }
+    #endif
 }
 
 bool Sound::free()
 {
+    #ifndef NO_SOUND
     if(chunk_)
     {
         Mix_FreeChunk(chunk_);
         chunk_   = NULL;
         channel_ = -1;
     }
-
+    #endif
     return true;
 }
 
 bool Sound::allocate()
 {
+
+    #ifndef NO_SOUND
     if(!chunk_)
     {
         chunk_ = Mix_LoadWAV(file_.c_str());
     }
 
     return (chunk_ != NULL);
+    #else
+    return true;
+    #endif
 }
 
 
 bool Sound::isPlaying()
 {
+    #ifndef NO_SOUND
     return (channel_ != -1) && Mix_Playing(channel_);
+    #else
+    return false;
+    #endif
 }
