@@ -18,8 +18,6 @@
 
 #include "../Utility/Log.h"
 
-#define NO_SOUND
-
 Sound::Sound(std::string file, std::string altfile)
     : file_(file)
     , chunk_(NULL)
